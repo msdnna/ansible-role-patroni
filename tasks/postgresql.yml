@@ -23,10 +23,41 @@
         regexp: ^#?create_main_cluster.*$
   when: ansible_os_family == "Debian"
 
+- block:
+    - name: Configure postgresql repository key
+      rpm_key:
+        key: "{{ postgresql_yum_key_url }}"
+      when: postgresql_yum_key_url != ""
+
+    - name: Configure postgresql repository
+      dnf:
+        name: "{{ postgresql_yum_repo_url }}"
+
+    - name: Disable postgresql built-in DNF module
+      copy:
+        dest: /etc/dnf/modules.d/postgresql.module
+        content: |
+          [postgresql]
+          name=postgresql
+          stream=
+          profiles=
+          state=disabled
+
+    - name: Install postgresql packages
+      dnf:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        update_cache: yes
+      with_items: 
+        - "{{ patroni_postgresql_packages }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "8"
+
 - name: Configure postgresql repository
   package:
     name: "{{ postgresql_yum_repo_url }}"
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "7"
 
 - name: Install postgresql packages
   package:
@@ -35,3 +66,6 @@
     update_cache: yes
   with_items:
     - "{{ patroni_postgresql_packages }}"
+  when: (ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "7") or
+        ansible_os_family == "Debian"
