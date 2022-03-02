@@ -1,5 +1,6 @@
 global
-        maxconn 100
+        log     /dev/log local0
+        maxconn {{ patroni_bootstrap_dcs_postgresql_parameters | selectattr('option', 'in', 'max_connections') | map(attribute='value') | list }}
 
 defaults
         log     global
@@ -22,7 +23,7 @@ listen master
         http-check expect status 200
         default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
 {% for server in patroni_haproxy_servers %}
-        server {{ server.name }} {{ server.ip }}:{{ server.port }} maxconn 100 check port {{ patroni_restapi_port }}
+        server {{ server.name }} {{ server.ip }}:{{ server.port }} maxconn {{ patroni_bootstrap_dcs_postgresql_parameters | selectattr('option', 'in', 'max_connections') | map(attribute='value') | list }} check port {{ patroni_restapi_port }}
 {% endfor %}
 
 listen replicas
@@ -31,5 +32,5 @@ listen replicas
         http-check expect status 200
         default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
 {% for server in patroni_haproxy_servers %}
-        server {{ server.name }} {{ server.ip }}:{{ server.port }} maxconn 100 check port {{ patroni_restapi_port }}
+        server {{ server.name }} {{ server.ip }}:{{ server.port }} maxconn {{ patroni_bootstrap_dcs_postgresql_parameters | selectattr('option', 'in', 'max_connections') | map(attribute='value') | list }} check port {{ patroni_restapi_port }}
 {% endfor %}
