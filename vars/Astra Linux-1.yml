@@ -1,0 +1,25 @@
+---
+
+__postgresql_apt_key_url: "https://repo.postgrespro.ru/keys/GPG-KEY-POSTGRESPRO"
+__postgresql_apt_repo: "deb https://repo.postgrespro.ru/pgpro-{{ patroni_postgresql_version }}/astra-smolensk/1.7 {{ ansible_distribution_release }} main"
+__postgresql_apt_filename: "postgrespro"
+
+__patroni_postgresql_data_dir: "/var/lib/pgpro/{{ patroni_postgresql_version }}/{{ patroni_scope }}"
+__patroni_postgresql_config_dir: "/var/lib/pgpro/{{ patroni_postgresql_version }}/{{ patroni_scope }}"
+__patroni_postgresql_bin_dir: "/usr/lib/pgpro/{{ patroni_postgresql_version }}/bin"
+__patroni_postgresql_pgpass: /var/lib/pgpro/.pgpass
+__patroni_bin_dir: /usr/local/bin
+
+__patroni_postgresql_packages:
+  - { name: "postgrespro-std-{{ patroni_postgresql_version }}",         state: "present" }
+  - { name: "postgrespro-std-client-{{ patroni_postgresql_version }}",  state: "present" }
+  - { name: "postgrespro-std-server-{{ patroni_postgresql_version }}",  state: "present" }
+  - { name: "postgrespro-std-contrib-{{ patroni_postgresql_version }}", state: "present" }
+
+__patroni_system_packages:
+  - { name: "python3-psycopg2", state: "present" }
+  - { name: "python3-pip",      state: "present" }
+  - { name: "jq",               state: "present" }
+
+__patroni_haproxy_packages:
+  - { name: "haproxy", state: "present" }

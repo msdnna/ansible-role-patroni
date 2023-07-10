@@ -1,5 +1,4 @@
 ---
-
 - block:
     - name: Configure postgresql repository key
       apt_key:
@@ -11,17 +10,19 @@
         repo: "{{ postgresql_apt_repo }}"
         filename: "{{ postgresql_apt_filename }}"
 
-    - name: Ensure postgresql database-cluster manager package
-      package:
-        name: postgresql-common
-        update_cache: yes
-
-    - name: Disable initializing of a default postgresql cluster
-      replace:
-        path: /etc/postgresql-common/createcluster.conf
-        replace: create_main_cluster = false
-        regexp: ^#?create_main_cluster.*$
-  when: ansible_os_family == "Debian"
+#    - block:
+#        - name: Ensure postgresql database-cluster manager package is installed
+#          apt:
+#            name: postgresql-common
+#            update_cache: yes
+#
+#        - name: Disable initializing of a default postgresql cluster
+#          replace:
+#            path: /etc/postgresql-common/createcluster.conf
+#            replace: create_main_cluster = false
+#            regexp: ^#?create_main_cluster.*$
+#      when: ansible_os_family == 'Debian'
+  when: ansible_os_family in ('Debian', 'Astra Linux')
 
 - block:
     - name: Configure postgresql repository key
@@ -43,15 +44,14 @@
           stream=
           profiles=
           state=disabled
-      when: ansible_os_family == "RedHat" and
-            ansible_distribution_major_version == "8"
-  when: ansible_os_family == "RedHat"
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '8'
+  when: ansible_os_family == 'RedHat'
     
-- name: Install postgresql packages
+- name: Ensure postgresql is installed
   package:
     name: "{{ patroni_postgresql_packages | map(attribute='name') | list }}"
-    state: present
-    update_cache: yes
   register: result
   until: result is successful
   delay: 10

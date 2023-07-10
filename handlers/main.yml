@@ -1,6 +1,5 @@
 ---
-
-- name: restart patroni-watchdog
+- name: Ensure patroni-watchdog is restarted
   systemd:
     name: patroni-watchdog
     state: restarted
@@ -9,20 +8,20 @@
   notify:
     - restart watchdog
 
-- name: restart watchdog
+- name: Ensure watchdog is restarted
   systemd:
     name: watchdog
     state: restarted
     enabled: yes
 
-- name: restart patroni
+- name: Ensure patroni is restarted
   systemd:
     name: patroni.service
     state: restarted
     daemon_reload: yes
     enabled: yes
 
-- name: restart haproxy
+- name: Ensure haproxy is restarted
   systemd:
     name: haproxy.service
     state: restarted
