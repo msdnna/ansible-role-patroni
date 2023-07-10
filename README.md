@@ -1,8 +1,5 @@
 # Ansible Role for Patroni
 
-[![Build Status](https://travis-ci.org/kostiantyn-nemchenko/ansible-role-patroni.svg?branch=master)](https://travis-ci.org/kostiantyn-nemchenko/ansible-role-patroni)
-[![Ansible Galaxy](https://img.shields.io/badge/galaxy-kostiantyn--nemchenko.patroni-blue.svg)](https://galaxy.ansible.com/kostiantyn-nemchenko/patroni/)
-
 An Ansible role which installs and configures [Patroni](https://github.com/zalando/patroni/) - HA solution for PostgreSQL.
 
 ### Help Wanted! If you encountered any difficulties with deploying the role into your environment, noticed a bug or a missing feature or just have an idea of how this project could be enhanced, please feel free to file an issue.
@@ -29,7 +26,7 @@ Currently, it is supposed that a DCS is prepared. Otherwise, you can try one of 
     - hosts: postgresql-servers
       become: yes
       roles:
-        - kostiantyn-nemchenko.patroni
+        - msdnna.patroni
 
 ## License
 
@@ -37,4 +34,6 @@ MIT
 
 ## Author Information
 Kostiantyn Nemchenko <kostiantyn.nemchenko@gmail.com>
+
+Vasily Sokolov <extracker0mail@gmail.com>
 

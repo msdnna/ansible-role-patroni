@@ -19,7 +19,7 @@
       set_fact:
         postgresql_apt_filename: "{{ __postgresql_apt_filename }}"
       when: postgresql_apt_filename is not defined
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family in ('Debian', 'Astra Linux')
 
 - name: Define RedHat specific facts
   block:
